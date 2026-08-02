@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin Login - Smart Cab System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/fontawesome-all.css">
+    
+    <!-- Fonts -->
+    <link href="//fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="top-bar_sub_w3layouts container-fluid">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 logo">
+                <a class="navbar-brand" href="index.html">
+                    <i class="fas fa-taxi"></i>Smart Cab Management
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Form -->
+    <section class="bookingform py-5">
+        <div class="container py-md-5 py-3">
+            <h1 class="heading text-capitalize text-center">Admin Login</h1>
+            <div class="row">
+                <div class="col-lg-6 book-appointment p-sm-5 py-5 px-4">
+                    <div class="book-agileinfo-form">
+                        <form id="adminLoginForm">
+                            <div class="form-group">
+                                <label for="adminEmail">Email address</label>
+                                <input type="email" class="form-control" id="adminEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="adminPassword">Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="adminPassword" required>
+                                    <button class="btn btn-outline-secondary" type="button" id="toggleAdminPassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Login</button>
+                            <div class="text-center mt-3">
+                                <a href="index.html" class="btn btn-outline-secondary">
+                                    <i class="fas fa-home"></i> Back to Home
+                                </a>
+                            </div>
+                        </form>
+                        <div class="alert alert-danger mt-3" id="loginError" style="display: none;"></div>
+                        <div class="alert alert-success mt-3" id="successMessage" style="display: none;"></div>
+                        <div class="loading-spinner text-center" id="loadingSpinner">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mt-md-5">
+                    <img src="images/car1.png" alt="" class="img-fluid" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-sm-5 py-4 px-md-5 px-3">
+        <div class="container-fluid pt-lg-5">
+            <div class="row">
+                <div class="col-lg-3 col-sm-6 mb-lg-0 mb-5 footer-grid-agileits-w3ls1 text-left">
+                    <h3 class="mb-sm-5 mb-4 mt-sm-0 mt-4">About Company</h3>
+                    <p>We are providing our services in gadhinglaj. You can book ride with us through our application as well as from our website also.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script>
+        // Show/Hide Password Functionality
+        document.getElementById('toggleAdminPassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('adminPassword');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        document.getElementById('adminLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            const successDiv = document.getElementById('successMessage');
+            
+            // Hide previous messages
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        admin_email: email,
+                        admin_password: password
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('Login response:', data);
+                
+                if (response.ok) {
+                    // Show success message
+                    successDiv.textContent = 'Login successful! Redirecting...';
+                    successDiv.style.display = 'block';
+                    
+                    // Redirect to admin dashboard
+                    setTimeout(() => {
+                        window.location.href = 'adminDashboard.html';
+                    }, 1000);
+                } else {
+                    // Show error message
+                    errorDiv.textContent = data.message || 'Invalid email or password';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorDiv.textContent = 'An error occurred during login. Please try again.';
+                errorDiv.style.display = 'block';
+            }
+        });
+
+        // Test backend connection
+        async function testBackendConnection() {
+            try {
+                const response = await fetch('http://localhost:5000/api/test', {
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                console.log('Backend connection test:', data);
+                
+                if (response.ok) {
+                    console.log('Backend is connected and running');
+                } else {
+                    console.error('Backend connection test failed:', data.message);
+                }
+            } catch (error) {
+                console.error('Backend connection test error:', error);
+            }
+        }
+
+        // Run connection test when page loads
+        document.addEventListener('DOMContentLoaded', testBackendConnection);
+    </script>
+</body>
+</html> 

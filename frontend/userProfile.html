@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>My Profile - Smart Cab System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/fontawesome-all.css">
+    
+    <!-- Fonts -->
+    <link href="//fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" href="userDashboard.html">
+                    <i class="fas fa-taxi"></i> Smart Cab
+                </a>
+                <div class="ml-auto">
+                    <span class="mr-3">Welcome, <span id="userName"></span></span>
+                    <a class="nav-link" href="index.html">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Profile Content -->
+    <section class="profile py-5">
+        <div class="container py-md-5 py-3">
+            <h1 class="heading text-capitalize text-center">My Profile</h1>
+            <div class="row mt-5">
+                <div class="col-lg-6 mx-auto">
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="profileForm">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name</label>
+                                    <input type="text" class="form-control" id="fullName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email address</label>
+                                    <input type="email" class="form-control" id="email" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" class="form-control" id="phone" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="currentPassword">Current Password</label>
+                                    <input type="password" class="form-control" id="currentPassword">
+                                </div>
+                                <div class="form-group">
+                                    <label for="newPassword">New Password</label>
+                                    <input type="password" class="form-control" id="newPassword">
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirmPassword">Confirm New Password</label>
+                                    <input type="password" class="form-control" id="confirmPassword">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Update Profile</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-sm-5 py-4 px-md-5 px-3">
+        <div class="container-fluid pt-lg-5">
+            <div class="row">
+                <div class="col-lg-3 col-sm-6 mb-lg-0 mb-5 footer-grid-agileits-w3ls1 text-left">
+                    <h3 class="mb-sm-5 mb-4 mt-sm-0 mt-4">About Company</h3>
+                    <p>We are providing our services in gadhinglaj. You can book ride with us through our application as well as from our website also.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            if (!currentUser) {
+                window.location.href = 'userLogin.html';
+                return;
+            }
+
+            // Display user name
+            document.getElementById('userName').textContent = currentUser.fullName;
+
+            // Handle logout
+            document.querySelector('.fa-sign-out-alt').parentElement.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            });
+
+            // Load user data
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.id === currentUser.id);
+            
+            if (user) {
+                document.getElementById('fullName').value = user.fullName;
+                document.getElementById('email').value = user.email;
+                document.getElementById('phone').value = user.phone;
+            }
+
+            // Handle form submission
+            document.getElementById('profileForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                // Check if password is being changed
+                if (currentPassword || newPassword || confirmPassword) {
+                    if (!currentPassword) {
+                        alert('Please enter your current password to make changes');
+                        return;
+                    }
+                    
+                    if (newPassword !== confirmPassword) {
+                        alert('New passwords do not match');
+                        return;
+                    }
+                    
+                    if (user.password !== currentPassword) {
+                        alert('Current password is incorrect');
+                        return;
+                    }
+                    
+                    user.password = newPassword;
+                }
+                
+                // Update user information
+                user.fullName = document.getElementById('fullName').value;
+                user.phone = document.getElementById('phone').value;
+                
+                // Update users array
+                const userIndex = users.findIndex(u => u.id === user.id);
+                users[userIndex] = user;
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                // Update current user
+                currentUser.fullName = user.fullName;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                
+                alert('Profile updated successfully');
+                
+                // Clear password fields
+                document.getElementById('currentPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+            });
+        });
+    </script>
+</body>
+</html> 

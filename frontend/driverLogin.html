@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Driver Login - Smart Cab System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/fontawesome-all.css">
+    
+    <!-- Fonts -->
+    <link href="//fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="top-bar_sub_w3layouts container-fluid">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 logo">
+                <a class="navbar-brand" href="index.html">
+                    <i class="fas fa-taxi"></i>Smart Cab Booking
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Form -->
+    <section class="bookingform py-5">
+        <div class="container py-md-5 py-3">
+            <h1 class="heading text-capitalize text-center">Driver Login</h1>
+            <div class="row">
+                <div class="col-lg-6 book-appointment p-sm-5 py-5 px-4">
+                    <div class="book-agileinfo-form">
+                        <form id="driverLoginForm">
+                            <div class="form-group">
+                                <label for="driverEmail">Email address</label>
+                                <input type="email" class="form-control" id="driverEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="driverPassword">Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="driverPassword" required>
+                                    <button class="btn btn-outline-secondary" type="button" id="toggleDriverPassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Login</button>
+                            <div class="text-center mt-3">
+                                <a href="index.html" class="btn btn-outline-secondary">
+                                    <i class="fas fa-home"></i> Back to Home
+                                </a>
+                            </div>
+                        </form>
+                        <div class="alert alert-danger mt-3" id="errorMessage" style="display: none;"></div>
+                        <div class="alert alert-success mt-3" id="successMessage" style="display: none;"></div>
+                        <div class="loading-spinner text-center" id="loadingSpinner">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mt-md-5">
+                    <img src="images/car1.png" alt="" class="img-fluid" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-sm-5 py-4 px-md-5 px-3">
+        <div class="container-fluid pt-lg-5">
+            <div class="row">
+                <div class="col-lg-3 col-sm-6 mb-lg-0 mb-5 footer-grid-agileits-w3ls1 text-left">
+                    <h3 class="mb-sm-5 mb-4 mt-sm-0 mt-4">About Company</h3>
+                    <p>We are providing our services in gadhinglaj. You can book ride with us through our application as well as from our website also.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script>
+        // Show/Hide Password Functionality
+        document.getElementById('toggleDriverPassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('driverPassword');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        document.getElementById('driverLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('driverEmail').value;
+            const password = document.getElementById('driverPassword').value;
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            
+            // Hide previous messages
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/driver/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        driver_email: email,
+                        driver_password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.message === 'Login successful') {
+                    // Show success message
+                    successDiv.textContent = 'Login successful! Redirecting...';
+                    successDiv.style.display = 'block';
+                    
+                    // Redirect to driver dashboard
+                    setTimeout(() => {
+                        window.location.href = 'driverDashboard.html';
+                    }, 1000);
+                } else {
+                    // Show error message
+                    errorDiv.textContent = data.message || 'Invalid email or password';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorDiv.textContent = 'Server connection error. Please try again.';
+                errorDiv.style.display = 'block';
+            }
+        });
+
+        // Test backend connection on page load
+        window.addEventListener('load', async function() {
+            try {
+                const response = await fetch('http://localhost:5000/api/test');
+                if (!response.ok) {
+                    document.getElementById('errorMessage').textContent = 'Backend server is not running. Please start the server.';
+                    document.getElementById('errorMessage').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('errorMessage').textContent = 'Cannot connect to backend server. Please start the server.';
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html> 

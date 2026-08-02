@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Smart Cab System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            background-color: #343a40;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: block;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        .welcome-message {
+            font-size: 1.2rem;
+            color: #6c757d;
+        }
+        .stat-card {
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .stat-card i {
+            opacity: 0.8;
+        }
+        .stat-card h5 {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .stat-card h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h3 class="text-white text-center mb-4">Smart Cab</h3>
+        <a href="#" class="active" data-tab="dashboard"><i class="fas fa-home me-2"></i>Dashboard</a>
+        <a href="#" data-tab="users"><i class="fas fa-users me-2"></i>Users</a>
+        <a href="#" data-tab="drivers"><i class="fas fa-car me-2"></i>Drivers</a>
+        <a href="#" data-tab="bookings"><i class="fas fa-calendar me-2"></i>Bookings</a>
+       <!--<a href="#" data-tab="payments"><i class="fas fa-money-bill me-2"></i>Payments</a>-->
+        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 id="pageTitle">Dashboard</h2>
+                <div class="welcome-message">
+                    Welcome, <span id="adminName">Admin</span>
+                </div>
+            </div>
+
+            <!-- Error and Success Messages -->
+            <div id="errorMessage" class="alert alert-danger d-none"></div>
+            <div id="successMessage" class="alert alert-success d-none"></div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboardTab" class="tab-content">
+                <!-- Statistics Cards -->
+                <div class="row g-3 mb-4" id="statsContainer">
+                    <div class="col-md-3">
+                        <div class="stat-card bg-primary text-white h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1">Total Users</h5>
+                                    <h2 class="mb-0" id="totalUsers">0</h2>
+                                </div>
+                                <i class="fas fa-users fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card bg-success text-white h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1">Total Drivers</h5>
+                                    <h2 class="mb-0" id="totalDrivers">0</h2>
+                                </div>
+                                <i class="fas fa-car fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card bg-info text-white h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1">Total Bookings</h5>
+                                    <h2 class="mb-0" id="totalBookings">0</h2>
+                                </div>
+                                <i class="fas fa-calendar fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card bg-warning text-white h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1">Total Revenue</h5>
+                                    <h2 class="mb-0" id="totalRevenue">₹0</h2>
+                                </div>
+                                <i class="fas fa-money-bill fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card bg-warning text-white h-100">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">Total No of Cars</h5>
+                            <h2 class="mb-0" id="total_drivers">3</h2>
+                        </div>
+                                <i class="fas fa-car fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                <!-- Recent Bookings Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Recent Bookings</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>User</th>
+                                        <th>Pickup</th>
+                                        <th>Dropoff</th>
+                                        <th>Date & Time</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookingsTableBody">
+                                    <!-- Bookings will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="usersTab" class="tab-content" style="display: none;">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Users</h5>
+                        <button class="btn btn-primary btn-sm" onclick="loadUsers()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Address</th>
+                                        <th>Joined Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                    <!-- Users will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Drivers Tab -->
+            <div id="driversTab" class="tab-content" style="display: none;">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Drivers</h5>
+                        <button class="btn btn-primary btn-sm" onclick="loadDrivers()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Vehicle Number</th>
+                                        <th>Vehicle Type</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="driverList">
+                                    <!-- Drivers will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bookings Tab -->
+            <div id="bookingsTab" class="tab-content" style="display: none;">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Bookings</h5>
+                        <button class="btn btn-primary btn-sm" onclick="loadAllBookings()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>User</th>
+                                        <th>Driver</th>
+                                        <th>Pickup</th>
+                                        <th>Destination</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="allBookings">
+                                    <!-- Bookings will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="position-fixed top-50 start-50 translate-middle" id="loadingSpinner" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editUserForm">
+                        <input type="hidden" id="editUserId">
+                        <div class="mb-3">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-control" id="editUserName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="editUserEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="editUserPhone">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Address</label>
+                            <textarea class="form-control" id="editUserAddress"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveUserEdit()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Driver Modal -->
+    <div class="modal fade" id="editDriverModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Driver</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editDriverForm">
+                        <input type="hidden" id="editDriverId">
+                        <div class="mb-3">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-control" id="editDriverName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="editDriverEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="editDriverPhone">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">License Number</label>
+                            <input type="text" class="form-control" id="editDriverLicense">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Vehicle Number</label>
+                            <input type="text" class="form-control" id="editDriverVehicleNumber">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Vehicle Type</label>
+                            <select class="form-control" id="editDriverVehicleType">
+                                <option value="">Select Vehicle Type</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveDriverEdit()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Check session on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkSession();
+            loadStats();
+            loadRecentBookings();
+            
+            // Set up tab switching
+            setupTabs();
+        });
+
+        // Set up tab switching functionality
+        function setupTabs() {
+            // Get all tab links
+            const tabLinks = document.querySelectorAll('.sidebar a[data-tab]');
+            
+            // Add click event listeners
+            tabLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links
+                    tabLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Get the tab name
+                    const tabName = this.getAttribute('data-tab');
+                    
+                    // Update page title
+                    document.getElementById('pageTitle').textContent = tabName.charAt(0).toUpperCase() + tabName.slice(1);
+                    
+                    // Hide all tab contents
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.style.display = 'none';
+                    });
+                    
+                    // Show selected tab content
+                    const selectedTab = document.getElementById(tabName + 'Tab');
+                    if (selectedTab) {
+                        selectedTab.style.display = 'block';
+                        
+                        // Load appropriate data based on tab
+                        switch(tabName) {
+                            case 'dashboard':
+                                loadStats();
+                                loadRecentBookings();
+                                break;
+                            case 'users':
+                                loadUsers();
+                                break;
+                            case 'drivers':
+                                loadDrivers();
+                                break;
+                            case 'bookings':
+                                loadBookings();
+                                break;
+                            case 'payments':
+                                loadPayments();
+                                break;
+                        }
+                    }
+                });
+            });
+        }
+
+        // Check if admin is logged in
+        async function checkSession() {
+            try {
+                showLoading();
+                const response = await fetch('http://localhost:5000/api/admin/session', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('adminName').textContent = data.admin_name;
+                    // Store admin name in localStorage for quick access
+                    localStorage.setItem('admin_name', data.admin_name);
+                    hideLoading();
+                } else {
+                    hideLoading();
+                    showError('Session expired. Please login again.');
+                    setTimeout(() => {
+                        window.location.href = 'adminLogin.html';
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('Error checking session:', error);
+                hideLoading();
+                showError('Failed to check session. Please try again.');
+                setTimeout(() => {
+                    window.location.href = 'adminLogin.html';
+                }, 2000);
+            }
+        }
+
+        // Set up periodic session check
+        setInterval(checkSession, 30000); // Check every 30 seconds
+
+        // Load dashboard statistics
+        async function loadStats() {
+            try {
+                showLoading();
+                const response = await fetch('http://localhost:5000/api/admin/stats', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Update stats with proper formatting
+                    document.getElementById('totalUsers').textContent = data.stats.total_users || 0;
+                    document.getElementById('totalDrivers').textContent = data.stats.total_drivers || 0;
+                    document.getElementById('totalBookings').textContent = data.stats.total_bookings || 0;
+                    document.getElementById('totalRevenue').textContent = '₹' + (data.stats.total_revenue || 0).toFixed(2);
+                    
+                    // Show stats container
+                    document.getElementById('statsContainer').style.display = 'block';
+                    hideLoading();
+                } else {
+                    throw new Error(data.error || 'Failed to load statistics');
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+                hideLoading();
+                showError(error.message || 'Failed to load statistics');
+                
+                // Set default values
+                document.getElementById('totalUsers').textContent = '0';
+                document.getElementById('totalDrivers').textContent = '0';
+                document.getElementById('totalBookings').textContent = '0';
+                document.getElementById('totalRevenue').textContent = '₹0.00';
+                
+                // Show stats container even if there's an error
+                document.getElementById('statsContainer').style.display = 'block';
+            }
+        }
+
+        // Load recent bookings
+        async function loadRecentBookings() {
+            try {
+                showLoading();
+                const response = await fetch('http://localhost:5000/api/admin/recent-bookings', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const tableBody = document.getElementById('bookingsTableBody');
+                    tableBody.innerHTML = '';
+                    
+                    if (data.bookings && data.bookings.length > 0) {
+                        data.bookings.forEach(booking => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${booking.booking_id}</td>
+                                <td>${booking.user_name}</td>
+                                <td>${booking.pickup_location}</td>
+                                <td>${booking.dropoff_location}</td>
+                                <td>${new Date(booking.booking_date).toLocaleString()}</td>
+                                <td><span class="badge bg-${getStatusBadgeClass(booking.status)}">${booking.status}</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" onclick="viewBooking(${booking.booking_id})">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        tableBody.innerHTML = '<tr><td colspan="7" class="text-center">No bookings found</td></tr>';
+                    }
+                    hideLoading();
+                } else {
+                    hideLoading();
+                    showError('Failed to load recent bookings');
+                }
+            } catch (error) {
+                console.error('Error loading recent bookings:', error);
+                hideLoading();
+                showError('Failed to load recent bookings');
+            }
+        }
+
+        // Helper function to get badge class based on status
+        function getStatusBadgeClass(status) {
+            switch(status.toLowerCase()) {
+                case 'pending':
+                    return 'warning';
+                case 'confirmed':
+                    return 'success';
+                case 'cancelled':
+                    return 'danger';
+                case 'completed':
+                    return 'info';
+                default:
+                    return 'secondary';
+            }
+        }
+
+        // Load users
+        async function loadUsers() {
+            try {
+                showLoading();
+                const response = await fetch('http://localhost:5000/api/admin/users', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Hide stats container and show users tab
+                    const statsContainer = document.getElementById('statsContainer');
+                    if (statsContainer) {
+                        statsContainer.style.display = 'none';
+                    }
+                    
+                    const usersTab = document.getElementById('usersTab');
+                    if (usersTab) {
+                        usersTab.style.display = 'block';
+                    }
+                    
+                    const usersTableBody = document.getElementById('usersTableBody');
+                    if (usersTableBody) {
+                        usersTableBody.innerHTML = '';
+                        
+                        if (data.users && data.users.length > 0) {
+                            data.users.forEach(user => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td>${user.user_id}</td>
+                                    <td>${user.user_name}</td>
+                                    <td>${user.user_email}</td>
+                                    <td>${user.user_phone || '-'}</td>
+                                    <td>${user.user_address || '-'}</td>
+                                    <td>${new Date(user.created_at).toLocaleString()}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" onclick="editUser(${user.user_id})">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                    </td>
+                                `;
+                                usersTableBody.appendChild(row);
+                            });
+                        } else {
+                            usersTableBody.innerHTML = '<tr><td colspan="6" class="text-center">No users found</td></tr>';
+                        }
+                    }
+                    
+                    hideLoading();
+                } else {
+                    hideLoading();
+                    showError(data.error || 'Failed to load users');
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+                hideLoading();
+                showError('Failed to load users. Please try again.');
+            }
+        }
+
+        // Load drivers
+        async function loadDrivers() {
+            try {
+                showLoading();
+                const response = await fetch('http://localhost:5000/api/admin/drivers', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    const driverList = document.getElementById('driverList');
+                    driverList.innerHTML = '';
+                    
+                    if (data.drivers && data.drivers.length > 0) {
+                        data.drivers.forEach(driver => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${driver.driver_id}</td>
+                                <td>${driver.driver_name}</td>
+                                <td>${driver.driver_email}</td>
+                                <td>${driver.driver_phone || '-'}</td>
+                                <td>${driver.vehicle_number || '-'}</td>
+                                <td>${driver.vehicle_type || '-'}</td>
+                                <td>
+                                    <span class="badge bg-success">Active</span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" onclick="editDriver(${driver.driver_id})">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn btn-sm btn-primary" onclick="viewDriver(${driver.driver_id})">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </td>
+                            `;
+                            driverList.appendChild(row);
+                        });
+                    } else {
+                        driverList.innerHTML = '<tr><td colspan="8" class="text-center">No drivers found</td></tr>';
+                    }
+                    
+                    hideLoading();
+                } else {
+                    hideLoading();
+                    showError(data.error || 'Failed to load drivers');
+                    if (data.details) {
+                        console.error('Error details:', data.details);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading drivers:', error);
+                hideLoading();
+                showError('Failed to load drivers. Please try again.');
+            }
+        }
+
+        // Load bookings
+        async function loadBookings() {
+            try {
+                showLoading();
+                const response = await fetch('http://localhost:5000/api/admin/bookings', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Hide stats container and show bookings tab
+                    const statsContainer = document.getElementById('statsContainer');
+                    if (statsContainer) {
+                        statsContainer.style.display = 'none';
+                    }
+                    
+                    const bookingsTab = document.getElementById('bookingsTab');
+                    if (bookingsTab) {
+                        bookingsTab.style.display = 'block';
+                    }
+                    
+                    const bookingsTableBody = document.getElementById('allBookings');
+                    if (bookingsTableBody) {
+                        bookingsTableBody.innerHTML = '';
+                        
+                        if (data.bookings && data.bookings.length > 0) {
+                            data.bookings.forEach(booking => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td>${booking.booking_id}</td>
+                                    <td>${booking.user_name}</td>
+                                    <td>${booking.driver_name || '-'}</td>
+                                    <td>${booking.pickup_location}</td>
+                                    <td>${booking.dropoff_location}</td>
+                                    <td>${booking.booking_date}</td>
+                                    <td>${booking.booking_time}</td>
+                                    <td><span class="badge bg-${getStatusBadgeClass(booking.status)}">${booking.status}</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" onclick="updateBookingStatus(${booking.booking_id}, 'confirmed')">
+                                            Confirm
+                                        </button>
+                                        <button class="btn btn-sm btn-success" onclick="updateBookingStatus(${booking.booking_id}, 'completed')">
+                                            Complete
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="updateBookingStatus(${booking.booking_id}, 'cancelled')">
+                                            Cancel
+                                        </button>
+                                    </td>
+                                `;
+                                bookingsTableBody.appendChild(row);
+                            });
+                        } else {
+                            bookingsTableBody.innerHTML = '<tr><td colspan="9" class="text-center">No bookings found</td></tr>';
+                        }
+                    }
+                    
+                    hideLoading();
+                } else {
+                    hideLoading();
+                    showError(data.error || 'Failed to load bookings');
+                }
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                hideLoading();
+                showError('Failed to load bookings. Please try again.');
+            }
+        }
+
+        // Load payments
+        async function loadPayments() {
+            try {
+                showLoading();
+                const response = await fetch('http://localhost:5000/api/admin/payments', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Hide stats and bookings, show payments
+                    document.getElementById('statsContainer').style.display = 'none';
+                    document.getElementById('bookingsTable').style.display = 'none';
+                    document.getElementById('usersTable').style.display = 'none';
+                    
+                    const paymentsTableBody = document.getElementById('paymentsTableBody');
+                    paymentsTableBody.innerHTML = '';
+                    
+                    if (data.payments && data.payments.length > 0) {
+                        data.payments.forEach(payment => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${payment.payment_id}</td>
+                                <td>${payment.booking_id}</td>
+                                <td>₹${payment.amount.toFixed(2)}</td>
+                                <td>
+                                    <span class="badge bg-${getPaymentStatusBadgeClass(payment.payment_status)}">
+                                        ${payment.payment_status}
+                                    </span>
+                                </td>
+                                <td>${payment.payment_date}</td>
+                            `;
+                            paymentsTableBody.appendChild(row);
+                        });
+                    } else {
+                        paymentsTableBody.innerHTML = '<tr><td colspan="5" class="text-center">No payments found</td></tr>';
+                    }
+                    
+                    hideLoading();
+                } else {
+                    hideLoading();
+                    showError(data.error || 'Failed to load payments');
+                }
+            } catch (error) {
+                console.error('Error loading payments:', error);
+                hideLoading();
+                showError('Failed to load payments. Please try again.');
+            }
+        }
+
+        // View booking details
+        function viewBooking(bookingId) {
+            // Implement booking details view
+            alert('View booking details for ID: ' + bookingId);
+        }
+
+        // Update booking status
+        async function updateBookingStatus(bookingId, status) {
+            try {
+                showLoading();
+                const response = await fetch(`http://localhost:5000/api/admin/bookings/${bookingId}`, {
+                    method: 'PUT',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ status })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showSuccess('Booking status updated successfully');
+                    loadBookings(); // Refresh the bookings table
+                } else {
+                    showError(data.error || 'Failed to update booking status');
+                }
+                
+                hideLoading();
+            } catch (error) {
+                console.error('Error updating booking status:', error);
+                hideLoading();
+                showError('Failed to update booking status. Please try again.');
+            }
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                showLoading();
+                const response = await fetch('http://localhost:5000/api/admin/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    window.location.href = 'adminLogin.html';
+                } else {
+                    hideLoading();
+                    showError('Failed to logout. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error logging out:', error);
+                hideLoading();
+                showError('Failed to logout. Please try again.');
+            }
+        }
+
+        // Show loading spinner
+        function showLoading() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+        }
+
+        // Hide loading spinner
+        function hideLoading() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('d-none');
+            setTimeout(() => {
+                errorDiv.classList.add('d-none');
+            }, 5000);
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.classList.remove('d-none');
+            setTimeout(() => {
+                successDiv.classList.add('d-none');
+            }, 5000);
+        }
+
+        // Helper function to get payment status badge class
+        function getPaymentStatusBadgeClass(status) {
+            switch (status) {
+                case 'pending':
+                    return 'warning';
+                case 'completed':
+                    return 'success';
+                case 'failed':
+                    return 'danger';
+                default:
+                    return 'secondary';
+            }
+        }
+
+        // Add these new functions to the script section
+        async function editUser(userId) {
+            try {
+                showLoading();
+                const response = await fetch(`http://localhost:5000/api/admin/users/${userId}`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const user = await response.json();
+                    document.getElementById('editUserId').value = user.user_id;
+                    document.getElementById('editUserName').value = user.user_name;
+                    document.getElementById('editUserEmail').value = user.user_email;
+                    document.getElementById('editUserPhone').value = user.user_phone || '';
+                    document.getElementById('editUserAddress').value = user.user_address || '';
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
+                    modal.show();
+                } else {
+                    showError('Failed to load user details');
+                }
+                hideLoading();
+            } catch (error) {
+                console.error('Error loading user details:', error);
+                hideLoading();
+                showError('Failed to load user details');
+            }
+        }
+
+        async function saveUserEdit() {
+            try {
+                showLoading();
+                const userId = document.getElementById('editUserId').value;
+                const userData = {
+                    user_name: document.getElementById('editUserName').value,
+                    user_email: document.getElementById('editUserEmail').value,
+                    user_phone: document.getElementById('editUserPhone').value,
+                    user_address: document.getElementById('editUserAddress').value
+                };
+                
+                const response = await fetch(`http://localhost:5000/api/admin/users/${userId}`, {
+                    method: 'PUT',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+                
+                if (response.ok) {
+                    showSuccess('User updated successfully');
+                    loadUsers();
+                    bootstrap.Modal.getInstance(document.getElementById('editUserModal')).hide();
+                } else {
+                    const data = await response.json();
+                    showError(data.error || 'Failed to update user');
+                }
+                hideLoading();
+            } catch (error) {
+                console.error('Error updating user:', error);
+                hideLoading();
+                showError('Failed to update user');
+            }
+        }
+
+        async function editDriver(driverId) {
+            try {
+                showLoading();
+                const response = await fetch(`http://localhost:5000/api/admin/drivers/${driverId}`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const driver = await response.json();
+                    document.getElementById('editDriverId').value = driver.driver_id;
+                    document.getElementById('editDriverName').value = driver.driver_name;
+                    document.getElementById('editDriverEmail').value = driver.driver_email;
+                    document.getElementById('editDriverPhone').value = driver.driver_phone || '';
+                    document.getElementById('editDriverLicense').value = driver.license_number || '';
+                    document.getElementById('editDriverVehicleNumber').value = driver.vehicle_number || '';
+                    
+                    // Load vehicle types
+                    const vehicleTypesResponse = await fetch('http://localhost:5000/api/vehicle-types', {
+                        method: 'GET',
+                        credentials: 'include',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    if (vehicleTypesResponse.ok) {
+                        const vehicleTypes = await vehicleTypesResponse.json();
+                        const select = document.getElementById('editDriverVehicleType');
+                        select.innerHTML = '<option value="">Select Vehicle Type</option>';
+                        vehicleTypes.forEach(type => {
+                            const option = document.createElement('option');
+                            option.value = type.vehicle_type_id;
+                            option.textContent = type.type_name;
+                            if (type.vehicle_type_id === driver.vehicle_type_id) {
+                                option.selected = true;
+                            }
+                            select.appendChild(option);
+                        });
+                    }
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('editDriverModal'));
+                    modal.show();
+                } else {
+                    showError('Failed to load driver details');
+                }
+                hideLoading();
+            } catch (error) {
+                console.error('Error loading driver details:', error);
+                hideLoading();
+                showError('Failed to load driver details');
+            }
+        }
+
+        async function saveDriverEdit() {
+            try {
+                showLoading();
+                const driverId = document.getElementById('editDriverId').value;
+                const driverData = {
+                    driver_name: document.getElementById('editDriverName').value,
+                    driver_email: document.getElementById('editDriverEmail').value,
+                    driver_phone: document.getElementById('editDriverPhone').value,
+                    license_number: document.getElementById('editDriverLicense').value,
+                    vehicle_number: document.getElementById('editDriverVehicleNumber').value,
+                    vehicle_type_id: document.getElementById('editDriverVehicleType').value
+                };
+                
+                const response = await fetch(`http://localhost:5000/api/admin/drivers/${driverId}`, {
+                    method: 'PUT',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(driverData)
+                });
+                
+                if (response.ok) {
+                    showSuccess('Driver updated successfully');
+                    loadDrivers();
+                    bootstrap.Modal.getInstance(document.getElementById('editDriverModal')).hide();
+                } else {
+                    const data = await response.json();
+                    showError(data.error || 'Failed to update driver');
+                }
+                hideLoading();
+            } catch (error) {
+                console.error('Error updating driver:', error);
+                hideLoading();
+                showError('Failed to update driver');
+            }
+        }
+    </script>
+</body>
+</html> 

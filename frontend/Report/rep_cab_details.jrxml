@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_cab_details" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="96b52917-f219-4248-9d5a-d8691988b3d2">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EFEF"/>
+		</conditionalStyle>
+	</style>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+     add_cab_details.`cab_id` AS add_cab_details_cab_id,
+     add_cab_details.`driver_name` AS add_cab_details_driver_name,
+     add_cab_details.`brand_name` AS add_cab_details_brand_name,
+     add_cab_details.`cab_type` AS add_cab_details_cab_type,
+     add_cab_details.`cab_no` AS add_cab_details_cab_no,
+     add_cab_details.`cab_chess_no` AS add_cab_details_cab_chess_no,
+     add_cab_details.`Cab_model` AS add_cab_details_Cab_model,
+     add_cab_details.`Km_rate` AS add_cab_details_Km_rate,
+     add_cab_details.`fuel_type` AS add_cab_details_fuel_type,
+     add_cab_details.`Description` AS add_cab_details_Description,
+     add_cab_details.`Select_cab_image` AS add_cab_details_Select_cab_image,
+     add_cab_details.`status` AS add_cab_details_status
+FROM
+     `add_cab_details` add_cab_details]]>
+	</queryString>
+	<field name="add_cab_details_cab_id" class="java.lang.Integer"/>
+	<field name="add_cab_details_driver_name" class="java.lang.String"/>
+	<field name="add_cab_details_brand_name" class="java.lang.String"/>
+	<field name="add_cab_details_cab_type" class="java.lang.String"/>
+	<field name="add_cab_details_cab_no" class="java.lang.String"/>
+	<field name="add_cab_details_cab_chess_no" class="java.lang.String"/>
+	<field name="add_cab_details_Cab_model" class="java.lang.String"/>
+	<field name="add_cab_details_Km_rate" class="java.lang.String"/>
+	<field name="add_cab_details_fuel_type" class="java.lang.String"/>
+	<field name="add_cab_details_Description" class="java.lang.String"/>
+	<field name="add_cab_details_Select_cab_image" class="java.lang.String"/>
+	<field name="add_cab_details_status" class="java.lang.String"/>
+	<group name="add_cab_details_cab_id">
+		<groupExpression><![CDATA[$F{add_cab_details_cab_id}]]></groupExpression>
+		<groupHeader>
+			<band height="27">
+				<frame>
+					<reportElement mode="Opaque" x="0" y="3" width="721" height="24" forecolor="#B89F7D" backcolor="#CCCCCC" uuid="8f3466f2-a105-4c04-b018-31ee19d6d641"/>
+					<textField isStretchWithOverflow="true">
+						<reportElement style="SubTitle" x="2" y="0" width="695" height="24" forecolor="#000000" uuid="e266e6d3-189a-4997-80e7-2adf93926203"/>
+						<textElement>
+							<font isBold="false"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{add_cab_details_cab_id}]]></textFieldExpression>
+					</textField>
+				</frame>
+				<rectangle>
+					<reportElement x="721" y="3" width="81" height="24" backcolor="#CCCCCC" uuid="c1dc1fe2-cc20-4d14-8ae8-7c8ddd8ff55f"/>
+					<graphicElement>
+						<pen lineWidth="0.0"/>
+					</graphicElement>
+				</rectangle>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="6"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="102" splitType="Stretch">
+			<image>
+				<reportElement mode="Opaque" x="721" y="0" width="81" height="66" backcolor="#000000" uuid="f8ccb61e-840f-4361-bd5f-1550c2c86b0a"/>
+				<imageExpression><![CDATA["taxiicon.jpg"]]></imageExpression>
+			</image>
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="721" height="66" backcolor="#000000" uuid="44b8b767-0a82-44a3-bd3c-b006f7363648"/>
+				<staticText>
+					<reportElement style="Title" x="0" y="0" width="370" height="66" uuid="17f07180-71c9-4bbe-9d42-6fe64397394c"/>
+					<box topPadding="4" leftPadding="4" bottomPadding="4" rightPadding="4"/>
+					<textElement verticalAlignment="Bottom">
+						<font isBold="false"/>
+					</textElement>
+					<text><![CDATA[Cab Details]]></text>
+				</staticText>
+			</frame>
+			<frame>
+				<reportElement mode="Opaque" x="0" y="70" width="802" height="32" forecolor="#000000" backcolor="#FFCC00" uuid="4e06d0d2-4669-4b24-a439-c0c384f7cddc"/>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement x="553" y="12" width="144" height="20" forecolor="#000000" uuid="5af46197-2fd3-467f-a737-5bd5940d4bca"/>
+					<textElement textAlignment="Right">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="18" splitType="Stretch">
+			<staticText>
+				<reportElement style="Column header" x="0" y="0" width="72" height="18" forecolor="#000000" uuid="65f315c7-d67f-4f68-bcf3-a544bcdc7e40"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dname]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="72" y="0" width="72" height="18" forecolor="#000000" uuid="d2535908-f75b-4266-a903-e6aaea8bdf1c"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bname]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="167" y="0" width="72" height="18" forecolor="#000000" uuid="0662978b-01b3-4a62-8e14-a2c3dd46a0cb"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cab Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="265" y="0" width="72" height="18" forecolor="#000000" uuid="aa094c8f-6d16-46e1-ac5d-2eeee25229aa"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cab no]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="370" y="0" width="72" height="18" forecolor="#000000" uuid="37e69bcd-1145-472b-9048-a52861db5861"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Chess no]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="466" y="0" width="72" height="18" forecolor="#000000" uuid="767ebf48-1ff0-4cc5-85b3-6549a3461292"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cab model]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="553" y="0" width="72" height="18" forecolor="#000000" uuid="e50c7338-d728-4fa9-8517-6a53143d4634"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Km Rate]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="638" y="0" width="72" height="18" forecolor="#000000" uuid="70316385-f764-4783-8b19-a834013c81ce"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fype]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="725" y="0" width="72" height="18" forecolor="#000000" uuid="0d73fc1b-3e84-4acd-a754-da3d495f6420"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Status]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<frame>
+				<reportElement style="Row" mode="Opaque" x="0" y="0" width="797" height="18" uuid="05969664-20cc-4661-b0b5-0ecaad911a0e"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="0" y="0" width="60" height="18" uuid="75e2c234-bca8-4b08-8982-362bac92f062"/>
+					<textElement>
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{add_cab_details_driver_name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="72" y="0" width="72" height="18" uuid="3a89f491-84db-40ed-83c9-70fe0bb3f1f3"/>
+					<textElement>
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{add_cab_details_brand_name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="167" y="0" width="72" height="18" uuid="7e9f4f52-ae3b-480b-9b3f-27ed8f664304"/>
+					<textElement>
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{add_cab_details_cab_type}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="265" y="0" width="72" height="18" uuid="7830a295-6fd7-406c-892b-2b2ca226f5a5"/>
+					<textElement>
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{add_cab_details_cab_no}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="370" y="0" width="72" height="18" uuid="90d93bd1-e045-4ba9-a9c9-a8c24a7a45fd"/>
+					<textElement>
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{add_cab_details_cab_chess_no}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="466" y="0" width="72" height="18" uuid="50440264-bcd5-48ea-9ddd-aa7645fe563d"/>
+					<textElement>
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{add_cab_details_Cab_model}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="553" y="0" width="72" height="18" uuid="a72db855-f8b7-47ea-92dc-bbd3b3ea90cd"/>
+					<textElement>
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{add_cab_details_Km_rate}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="638" y="0" width="72" height="18" uuid="323c9cc0-a2cd-43d3-b8df-68f8ed3093ca"/>
+					<textElement>
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{add_cab_details_fuel_type}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="725" y="0" width="72" height="18" uuid="e9314782-ca03-4a1f-84b5-e15e0e8ca6cf"/>
+					<textElement>
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{add_cab_details_status}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="7" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="c2271297-0535-47d4-8f58-a610d16952d3"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="25" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="802" height="25" forecolor="#D0B48E" backcolor="#000000" uuid="4919da96-18b2-45a3-a94f-18b50bba9b88"/>
+				<textField evaluationTime="Report">
+					<reportElement style="Column header" x="757" y="3" width="40" height="20" forecolor="#FFFFFF" uuid="77601d69-0bea-4dc5-8214-27a97b3d2a17"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="Column header" x="677" y="3" width="80" height="20" forecolor="#FFFFFF" uuid="ee6113d9-d517-4f5b-8fd5-36f973bb95db"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				</textField>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement style="Column header" x="2" y="3" width="197" height="20" forecolor="#FFFFFF" uuid="fb115c3f-bf7a-4379-b329-ec06adbdb427"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

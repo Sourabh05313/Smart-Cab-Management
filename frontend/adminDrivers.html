@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Drivers - Smart Cab Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background-color: #343a40;
+            padding-top: 20px;
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,.75);
+            padding: 10px 20px;
+            margin: 5px 0;
+        }
+        .sidebar .nav-link:hover {
+            color: #fff;
+            background-color: rgba(255,255,255,.1);
+        }
+        .sidebar .nav-link.active {
+            color: #fff;
+            background-color: rgba(255,255,255,.1);
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .table-responsive {
+            margin-top: 20px;
+        }
+        .action-buttons .btn {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar">
+                <div class="text-center mb-4">
+                    <h4 class="text-white">Smart Cab Admin</h4>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="adminDashboard.html">
+                            <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="adminUsers.html">
+                            <i class="bi bi-people me-2"></i>Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="adminDrivers.html">
+                            <i class="bi bi-car-front me-2"></i>Drivers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="adminBookings.html">
+                            <i class="bi bi-calendar-check me-2"></i>Bookings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="adminPayments.html">
+                            <i class="bi bi-credit-card me-2"></i>Payments
+                        </a>
+                    </li>
+                    <li class="nav-item mt-auto">
+                        <a class="nav-link" href="#" id="logoutBtn">
+                            <i class="bi bi-box-arrow-right me-2"></i>Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Manage Drivers</h2>
+                    <div class="text-muted">
+                        Welcome, <span id="adminName">Admin</span>
+                    </div>
+                </div>
+
+                <!-- Drivers Table -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">All Drivers</h5>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDriverModal">
+                            <i class="bi bi-plus-circle me-2"></i>Add New Driver
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>License</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="driversTableBody">
+                                    <!-- Drivers will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Driver Modal -->
+    <div class="modal fade" id="addDriverModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Driver</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addDriverForm">
+                        <div class="mb-3">
+                            <label for="driverName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="driverName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="driverEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="driverEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="driverPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="driverPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="driverPhone" class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="driverPhone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="driverLicense" class="form-label">License Number</label>
+                            <input type="text" class="form-control" id="driverLicense" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="driverStatus" class="form-label">Status</label>
+                            <select class="form-select" id="driverStatus" required>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveDriverBtn">Save Driver</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let sessionCheckInterval;
+        let isCheckingSession = false;
+
+        // Check admin session
+        async function checkAdminSession() {
+            if (isCheckingSession) return;
+            isCheckingSession = true;
+
+            try {
+                const response = await fetch('http://localhost:5000/api/admin/check-session', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    clearInterval(sessionCheckInterval);
+                    window.location.href = 'adminLogin.html';
+                    return;
+                }
+                
+                document.getElementById('adminName').textContent = data.admin_name;
+            } catch (error) {
+                console.error('Session check failed:', error);
+                clearInterval(sessionCheckInterval);
+                window.location.href = 'adminLogin.html';
+            } finally {
+                isCheckingSession = false;
+            }
+        }
+
+        // Fetch all drivers
+        async function fetchDrivers() {
+            try {
+                const response = await fetch('http://localhost:5000/api/admin/drivers', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const tbody = document.getElementById('driversTableBody');
+                    tbody.innerHTML = '';
+                    
+                    data.drivers.forEach(driver => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${driver.driver_id}</td>
+                            <td>${driver.driver_name}</td>
+                            <td>${driver.driver_email}</td>
+                            <td>${driver.driver_phone}</td>
+                            <td>${driver.driver_license}</td>
+                            <td>
+                                <span class="badge ${driver.driver_status === 'active' ? 'bg-success' : 'bg-danger'}">
+                                    ${driver.driver_status}
+                                </span>
+                            </td>
+                            <td class="action-buttons">
+                                <button class="btn btn-sm btn-info" onclick="editDriver(${driver.driver_id})">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteDriver(${driver.driver_id})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching drivers:', error);
+            }
+        }
+
+        // Save new driver
+        document.getElementById('saveDriverBtn').addEventListener('click', async function() {
+            const formData = {
+                name: document.getElementById('driverName').value,
+                email: document.getElementById('driverEmail').value,
+                password: document.getElementById('driverPassword').value,
+                phone: document.getElementById('driverPhone').value,
+                license: document.getElementById('driverLicense').value,
+                status: document.getElementById('driverStatus').value
+            };
+
+            try {
+                const response = await fetch('http://localhost:5000/api/admin/drivers', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Close modal and refresh drivers list
+                    bootstrap.Modal.getInstance(document.getElementById('addDriverModal')).hide();
+                    fetchDrivers();
+                } else {
+                    alert(data.error || 'Failed to add driver');
+                }
+            } catch (error) {
+                console.error('Error adding driver:', error);
+                alert('Failed to add driver');
+            }
+        });
+
+        // Handle logout
+        document.getElementById('logoutBtn').addEventListener('click', async function(e) {
+            e.preventDefault();
+            try {
+                const response = await fetch('http://localhost:5000/api/admin/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    clearInterval(sessionCheckInterval);
+                    window.location.href = 'adminLogin.html';
+                }
+            } catch (error) {
+                console.error('Logout failed:', error);
+            }
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAdminSession();
+            fetchDrivers();
+            
+            // Set up periodic session check
+            sessionCheckInterval = setInterval(checkAdminSession, 30000);
+        });
+    </script>
+</body>
+</html> 

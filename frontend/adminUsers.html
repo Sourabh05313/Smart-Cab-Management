@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - Smart Cab Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background-color: #343a40;
+            padding-top: 20px;
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,.75);
+            padding: 10px 20px;
+            margin: 5px 0;
+        }
+        .sidebar .nav-link:hover {
+            color: #fff;
+            background-color: rgba(255,255,255,.1);
+        }
+        .sidebar .nav-link.active {
+            color: #fff;
+            background-color: rgba(255,255,255,.1);
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .table-responsive {
+            margin-top: 20px;
+        }
+        .action-buttons .btn {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar">
+                <div class="text-center mb-4">
+                    <h4 class="text-white">Smart Cab Admin</h4>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="adminDashboard.html">
+                            <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="adminUsers.html">
+                            <i class="bi bi-people me-2"></i>Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="adminDrivers.html">
+                            <i class="bi bi-car-front me-2"></i>Drivers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="adminBookings.html">
+                            <i class="bi bi-calendar-check me-2"></i>Bookings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="adminPayments.html">
+                            <i class="bi bi-credit-card me-2"></i>Payments
+                        </a>
+                    </li>
+                    <li class="nav-item mt-auto">
+                        <a class="nav-link" href="#" id="logoutBtn">
+                            <i class="bi bi-box-arrow-right me-2"></i>Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Manage Users</h2>
+                    <div class="text-muted">
+                        Welcome, <span id="adminName">Admin</span>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">All Users</h5>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                            <i class="bi bi-plus-circle me-2"></i>Add New User
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Address</th>
+                                        <th>Created At</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                    <!-- Users will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addUserForm">
+                        <div class="mb-3">
+                            <label for="userName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="userName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="userEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="userPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userPhone" class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="userPhone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userAddress" class="form-label">Address</label>
+                            <textarea class="form-control" id="userAddress" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveUserBtn">Save User</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Check session on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkSession();
+            loadUsers();
+        });
+
+        // Check if admin is logged in
+        async function checkSession() {
+            try {
+                showLoading();
+                const response = await fetch('http://localhost:5000/api/admin/session', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('adminName').textContent = data.admin_name;
+                    localStorage.setItem('admin_name', data.admin_name);
+                    hideLoading();
+                } else {
+                    hideLoading();
+                    showError('Session expired. Please login again.');
+                    setTimeout(() => {
+                        window.location.href = 'adminLogin.html';
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('Error checking session:', error);
+                hideLoading();
+                showError('Failed to check session. Please try again.');
+                setTimeout(() => {
+                    window.location.href = 'adminLogin.html';
+                }, 2000);
+            }
+        }
+
+        // Set up periodic session check
+        setInterval(checkSession, 30000); // Check every 30 seconds
+
+        // Load users from the database
+        async function loadUsers() {
+            try {
+                showLoading();
+                const response = await fetch('http://localhost:5000/api/admin/users', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const tableBody = document.getElementById('usersTableBody');
+                    tableBody.innerHTML = '';
+                    
+                    if (data.users && data.users.length > 0) {
+                        data.users.forEach(user => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${user.user_id}</td>
+                                <td>${user.user_name}</td>
+                                <td>${user.user_email}</td>
+                                <td>${user.user_phone || '-'}</td>
+                                <td>${user.user_address || '-'}</td>
+                                <td>${new Date(user.created_at).toLocaleString()}</td>
+                                <td class="action-buttons">
+                                    <button class="btn btn-sm btn-info" onclick="viewUser(${user.user_id})">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteUser(${user.user_id})">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        tableBody.innerHTML = '<tr><td colspan="7" class="text-center">No users found</td></tr>';
+                    }
+                    hideLoading();
+                } else {
+                    hideLoading();
+                    showError('Failed to load users. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+                hideLoading();
+                showError('Failed to load users. Please try again.');
+            }
+        }
+
+        // Save new user
+        document.getElementById('saveUserBtn').addEventListener('click', async function() {
+            const form = document.getElementById('addUserForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const userData = {
+                name: document.getElementById('userName').value,
+                email: document.getElementById('userEmail').value,
+                password: document.getElementById('userPassword').value,
+                phone: document.getElementById('userPhone').value,
+                address: document.getElementById('userAddress').value
+            };
+
+            try {
+                showLoading();
+                const response = await fetch('http://localhost:5000/api/user/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showSuccess('User added successfully');
+                    $('#addUserModal').modal('hide');
+                    form.reset();
+                    loadUsers(); // Refresh the users list
+                } else {
+                    const error = await response.json();
+                    showError(error.error || 'Failed to add user');
+                }
+            } catch (error) {
+                console.error('Error adding user:', error);
+                showError('Failed to add user. Please try again.');
+            } finally {
+                hideLoading();
+            }
+        });
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', async function() {
+            try {
+                showLoading();
+                const response = await fetch('http://localhost:5000/api/admin/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+
+                if (response.ok) {
+                    localStorage.removeItem('admin_name');
+                    window.location.href = 'adminLogin.html';
+                } else {
+                    hideLoading();
+                    showError('Failed to logout. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error logging out:', error);
+                hideLoading();
+                showError('Failed to logout. Please try again.');
+            }
+        });
+
+        // Utility functions
+        function showLoading() {
+            // You can implement a loading spinner here
+            document.body.style.cursor = 'wait';
+        }
+
+        function hideLoading() {
+            document.body.style.cursor = 'default';
+        }
+
+        function showError(message) {
+            // You can implement a toast or alert here
+            alert('Error: ' + message);
+        }
+
+        function showSuccess(message) {
+            // You can implement a toast or alert here
+            alert('Success: ' + message);
+        }
+
+        // View user details
+        function viewUser(userId) {
+            // Implement view user functionality
+            alert('View user: ' + userId);
+        }
+
+        // Delete user
+        async function deleteUser(userId) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                try {
+                    showLoading();
+                    const response = await fetch(`http://localhost:5000/api/admin/users/${userId}`, {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
+
+                    if (response.ok) {
+                        showSuccess('User deleted successfully');
+                        loadUsers(); // Refresh the users list
+                    } else {
+                        const error = await response.json();
+                        showError(error.error || 'Failed to delete user');
+                    }
+                } catch (error) {
+                    console.error('Error deleting user:', error);
+                    showError('Failed to delete user. Please try again.');
+                } finally {
+                    hideLoading();
+                }
+            }
+        }
+    </script>
+</body>
+</html> 
